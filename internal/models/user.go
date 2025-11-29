@@ -16,7 +16,7 @@ const (
 )
 
 type User struct {
-	ID    int8
+	ID    uint8
 	Name  Name
 	Email string
 	Group Group
