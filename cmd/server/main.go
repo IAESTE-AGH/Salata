@@ -7,6 +7,8 @@ import (
 )
 
 func main() {
+	database.Init(config.DatabaseURL)
+
 	http.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "Ready")
 	})
