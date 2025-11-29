@@ -12,7 +12,7 @@ const (
 	PR      Group = "PR"
 	IO      Group = "IO"
 	JFR     Group = "JFR"
-	Grafika Group = "Grafika"
+	GRAFIKA Group = "Grafika"
 )
 
 type User struct {
