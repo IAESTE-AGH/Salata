@@ -9,6 +9,7 @@ type Group string
 
 const (
 	IT      Group = "IT"
+	HR      Group = "HR"
 	PR      Group = "PR"
 	IO      Group = "IO"
 	JFR     Group = "JFR"
