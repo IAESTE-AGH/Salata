@@ -1,6 +1,9 @@
 package main
 
 import (
+	"go_server/internal/config"
+	"go_server/internal/database"
+	"go_server/internal/handlers"
 	"io"
 	"log"
 	"net/http"
