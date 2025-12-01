@@ -21,7 +21,7 @@ func CreateEvent(db *sql.DB, start time.Time, end time.Time) error {
 		return err
 	}
 
-	new_name := fmt.Sprintf("table_%d", new_id)
+	newName := fmt.Sprintf("table_%d", new_id)
 	columns := CreateColumnsFromTime(start, end)
 	var colDefs []string
 	for _, colName := range columns {
@@ -33,7 +33,7 @@ func CreateEvent(db *sql.DB, start time.Time, end time.Time) error {
 		return fmt.Errorf("cannot create table with no columns")
 	}
 
-	query := fmt.Sprintf("CREATE TABLE %q (%s)", new_name, colsString)
+	query := fmt.Sprintf("CREATE TABLE %q (%s)", newName, colsString)
 
 	_, err = db.Exec(query)
 	if err != nil {
