@@ -105,6 +105,10 @@ func GenerateTimeSlots(start, stop time.Time) []string {
 	return slots
 }
 
+func tableFrom(eventId int) string {
+	return fmt.Sprintf("table_%d", eventId)
+}
+
 func IfTableExist(db *sql.DB, id int) (bool, error) {
 	tableName := fmt.Sprintf("table_%d", id)
 
