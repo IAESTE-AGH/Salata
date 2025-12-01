@@ -7,13 +7,13 @@ import (
 	"net/http"
 )
 
-type Request struct {
+type RequestDeleteEvent struct {
 	EventId int `json:"event_id"`
 }
 
 func HandleDeleteEvent(w http.ResponseWriter, r *http.Request) {
 	db := database.DB
-	var req Request
+	var req RequestDeleteEvent
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
