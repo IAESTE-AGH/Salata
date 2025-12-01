@@ -218,6 +218,14 @@ func CheckTableColumns(db *sql.DB, eventId int, colNames []string) error {
 	return nil
 }
 
+func CheckValues(colValues []string) error {
+	allowed := []string{"yes", "maybe", "no"}
+	if !isSubset(colValues, allowed) {
+		return errors.New("not allowed values")
+	}
+	return nil
+}
+
 func GetTableColumns(db *sql.DB, tableName string) ([]string, error) {
 	query := `
 		SELECT column_name
