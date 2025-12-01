@@ -183,3 +183,14 @@ func CheckTable(db *sql.DB, eventId int) error {
 	}
 	return nil
 }
+
+func CheckUser(db *sql.DB, userId int) error {
+	check, err := IfUserExists(db, userId)
+	if err != nil {
+		return err
+	}
+	if !check {
+		return errors.New("no corresponding user in database")
+	}
+	return nil
+}
