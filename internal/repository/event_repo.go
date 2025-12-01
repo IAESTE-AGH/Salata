@@ -151,3 +151,14 @@ func IfTableExist(db *sql.DB, id int) (bool, error) {
 	}
 	return true, nil
 }
+
+func CheckTable(db *sql.DB, eventId int) error {
+	check, err := IfTableExist(db, eventId)
+	if err != nil {
+		return err
+	}
+	if !check {
+		return errors.New("no corresponding event in database")
+	}
+	return nil
+}
