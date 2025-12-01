@@ -198,3 +198,67 @@ func CheckUser(db *sql.DB, userId int) error {
 	}
 	return nil
 }
+
+func CheckTableColumns(db *sql.DB, eventId int, colNames []string) error {
+	err := CheckTable(db, eventId)
+	if err != nil {
+		return err
+	}
+
+	tableName := tableFrom(eventId)
+	tableColumns, err := GetTableColumns(db, tableName)
+	if err != nil {
+		return err
+	}
+
+	if !isSubset(colNames, tableColumns) {
+		return errors.New("column names not in table columns")
+	}
+
+	return nil
+}
+
+func GetTableColumns(db *sql.DB, tableName string) ([]string, error) {
+	query := `
+		SELECT column_name
+		FROM information_schema.columns
+		WHERE table_name = $1
+	`
+	rows, err := db.Query(query, tableName)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var cols []string
+	for rows.Next() {
+		var col string
+		if err := rows.Scan(&col); err != nil {
+			return nil, err
+		}
+		cols = append(cols, col)
+	}
+	return cols, nil
+}
+
+func isSubset(smaller []string, bigger []string) bool {
+	set := make(map[string]struct{}, len(bigger))
+	for _, s := range bigger {
+		set[s] = struct{}{}
+	}
+
+	for _, s := range smaller {
+		if _, ok := set[s]; !ok {
+			return false
+		}
+	}
+	return true
+}
+
+func getMapKeys(m map[string]string) []string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return keys
+}
