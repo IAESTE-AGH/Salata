@@ -278,3 +278,67 @@ func getMapValues(m map[string]string) []string {
 	}
 	return values
 }
+
+func SetAvailabilityFor(db *sql.DB, tableName string, timeSlot string, attendance string, userId int) error {
+	addQuery := fmt.Sprintf(`
+		UPDATE %q
+		SET %q = array_append(%q, $1)
+		WHERE name = $2
+		AND NOT (%q @> ARRAY[$1::integer])`, tableName, timeSlot, timeSlot, timeSlot)
+	res, err := db.Exec(addQuery, userId, attendance)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	switch rowsAffected {
+	case 0:
+		log.Println("User already present in the availability list")
+	case 1:
+	default:
+		return errors.New("multiple rows affected during availability update for one user")
+	}
+
+	opposites, err := oppositeAttendance(attendance)
+	if err != nil {
+		return err
+	}
+
+	removeQuery := fmt.Sprintf(`
+		UPDATE %q
+		SET %q = array_remove(%q, $1)
+		WHERE name IN ($2, $3)
+		AND %q @> ARRAY[$1::integer]`, tableName, timeSlot, timeSlot, timeSlot)
+	res, err = db.Exec(removeQuery, userId, opposites[0], opposites[1])
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err = res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func oppositeAttendance(attendance string) ([2]string, error) {
+	var opposites [2]string
+
+	switch attendance {
+	case "yes":
+		opposites = [2]string{"no", "maybe"}
+	case "no":
+		opposites = [2]string{"yes", "maybe"}
+	case "maybe":
+		opposites = [2]string{"yes", "no"}
+	default:
+		return [2]string{}, errors.New("attendance must be 'yes', 'maybe' or 'no'")
+	}
+
+	return opposites, nil
+}
