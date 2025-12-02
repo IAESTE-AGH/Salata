@@ -23,7 +23,7 @@ func CreateEvent(db *sql.DB, start time.Time, end time.Time) error {
 		return err
 	}
 
-	newName := fmt.Sprintf("table_%d", newId)
+	newName := tableFrom(newId)
 	columns := CreateColumnsFromTime(start, end)
 	var colDefs []string
 	for _, colName := range columns {
