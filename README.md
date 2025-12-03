@@ -91,8 +91,6 @@ psql -U postgres -d moj_projekt_db -f schema.sql
 Gdy masz już zainstalowane Go i przygotowaną bazę danych,
 wykonaj następujące kroki:
 
-Zmień nazwę projektu na `go_server` - ta nazwa również zostanie zmieniona po ustaleniu nazwy projektu.
-
 1. Pobierz zależności
 
 Otwórz terminal w folderze projektu i uruchom:
