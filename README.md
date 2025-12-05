@@ -23,7 +23,9 @@ Thanks to Docker, you do not need to install Go or PostgreSQL locally.
 
 ## 🚀 Getting Started
 
-Follow these steps to get the application up and running.
+Follow these steps to get the application up and running manually
+or execute `setup.sh` and use `docker compose up` and `docker compose down`
+to start and stop app.
 
 #### 1. Clone the Repository
 
@@ -32,10 +34,10 @@ Fork this repository to your GitHub account, then clone it locally:
 
 ```bash
   # Using SSH
-  git clone git@github.com:<YOUR_NICK>/IAESTE_stands_server.git
+  git clone git@github.com:<YOUR_NICK>/MyLC.git
 
   # Or using HTTPS
-  git clone https://github.com/<YOUR_NICK>/IAESTE_stands_server.git
+  git clone https://github.com/<YOUR_NICK>/MyLC.git
 ```
 
 Note: The main branch always contains the latest stable version of the code.
