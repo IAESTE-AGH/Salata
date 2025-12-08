@@ -35,4 +35,5 @@ fi
 
 # 3. Launch Docker Compose
 echo -e "${GREEN}🐳 Building and launching project inside Docker...${NC}"
+docker compose down -v
 docker compose up --build

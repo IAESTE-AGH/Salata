@@ -25,4 +25,5 @@ if (Test-Path -Path $DirName) {
 
 # 3. ULaunch Docker Compose
 Write-Host "🐳 Building and launching project inside Docker..." -ForegroundColor Green
+docker compose down -v
 docker compose up --build
