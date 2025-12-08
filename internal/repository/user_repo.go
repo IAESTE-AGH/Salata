@@ -72,6 +72,11 @@ func CreateUser(db *sql.DB, email string, password string) error {
 		return err
 	}
 
+	err = sendVerificationEmail(email, token)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
