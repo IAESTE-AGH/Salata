@@ -105,11 +105,17 @@ func VerifyUser(db *sql.DB, token string) error {
 		return err
 	}
 
+	first, last, err := extractNameFromEmail(email)
+	if err != nil {
+		return err
+	}
+
 	_, err = db.Exec(`
 		INSERT INTO users
-			()
+			(first_name, last_name, email)
 		VALUES
-		    ()`)
+		    ($1, $2, $3)
+	`, first, last, email)
 
 	return nil
 }
