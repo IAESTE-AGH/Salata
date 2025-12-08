@@ -9,6 +9,7 @@ import (
 	"go_server/internal/config"
 	"go_server/internal/models"
 	"net/smtp"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -111,6 +112,28 @@ func VerifyUser(db *sql.DB, token string) error {
 		    ()`)
 
 	return nil
+}
+
+func extractNameFromEmail(email string) (string, string, error) {
+	parts := strings.Split(email, "@")
+	if len(parts) != 2 {
+		return "", "", errors.New("invalid email format")
+	}
+
+	domain := parts[1]
+	if !strings.HasPrefix(domain, "iaeste.") {
+		return "", "", errors.New("not an iaeste email")
+	}
+
+	nameParts := strings.Split(parts[0], ".")
+	if len(nameParts) != 2 {
+		return "", "", errors.New("expected format firstname.lastname")
+	}
+
+	first := capitalize(nameParts[0])
+	last := capitalize(nameParts[1])
+
+	return first, last, nil
 }
 
 func sendVerificationEmail(to string, token string) error {
