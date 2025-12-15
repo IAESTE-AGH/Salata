@@ -152,10 +152,17 @@ func sendVerificationEmail(to string, token string) error {
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
 
-	message := fmt.Sprintf("Verification Link: http://localhost:8080/verify?token=%s", token)
+	subject := "Weryfikacja konta MyLC"
+	body := fmt.Sprintf("Kliknij w link, aby zweryfikować konto: http://localhost:8080/verify_user?token=%s", token)
+
+	msg := []byte(fmt.Sprintf("To: %s\r\n"+
+		"Subject: %s\r\n"+
+		"\r\n"+
+		"%s\r\n", to, subject, body))
+
 	auth := smtp.PlainAuth("", config.EmailUser, config.EmailPassword, smtpHost)
 
-	return smtp.SendMail(smtpHost+":"+smtpPort, auth, config.EmailUser, []string{to}, []byte(message))
+	return smtp.SendMail(smtpHost+":"+smtpPort, auth, config.EmailUser, []string{to}, msg)
 }
 
 func CheckAccount(db *sql.DB, email string) (bool, error) {
