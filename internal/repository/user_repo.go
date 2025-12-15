@@ -98,8 +98,7 @@ func VerifyUser(db *sql.DB, token string) error {
 
 	_, err = db.Exec(`
 		UPDATE accounts
-		SET (verification_token, is_verified)
-		VALUES ('', TRUE)
+		SET verification_token='', is_verified=TRUE
 		WHERE email = $1`, email)
 	if err != nil {
 		return err
