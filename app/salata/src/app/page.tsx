@@ -1,9 +1,13 @@
 import HeroAnimation from "@/components/AnimatedHero";
+import NewScene from "@/components/NewScene";
+import Scene from "@/components/Scene";
 
 export default function Home() {
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center mb-12">
+    <section className="w-full mx-auto  py-12">
+      {/* <NewScene /> */}
+      <Scene />
+      {/* <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold text-(--foreground)">
           Umów się z <span className="text-(--primary)">Sałatą</span>
         </h1>
@@ -16,7 +20,7 @@ export default function Home() {
 
       <div className="h-screen flex items-center justify-center bg-(--background)">
         <p className="text-(--foreground)">coś tu bedzie</p>
-      </div>
+      </div> */}
     </section>
   );
 }

@@ -22,11 +22,17 @@ export default function MobileMenu() {
 
   useGSAP(
     () => {
-      gsap.set(menuRef.current, { yPercent: -100, display: "none" });
+      gsap.set(menuRef.current, {
+        yPercent: -100,
+        display: "none",
+        visibility: "hidden",
+        opacity: 0,
+      });
 
       tl.current = gsap
         .timeline({ paused: true })
 
+        // --- HAMBURGER ANIMATION ---
         .to(
           line1Ref.current,
           { y: 8, rotate: 45, duration: 0.2, ease: "power1.inOut" },
@@ -44,18 +50,27 @@ export default function MobileMenu() {
         )
 
         // --- MENU SLIDE  ---
-        .set(menuRef.current, { display: "block" }, 0)
+        .set(
+          menuRef.current,
+          {
+            display: "block",
+            visibility: "visible",
+          },
+          0
+        )
 
         .to(
           menuRef.current,
           {
             yPercent: 0,
+            opacity: 1,
             duration: 0.5,
             ease: "power3.out",
           },
           0
         )
 
+        // --- LINKS ANIMATION ---
         .from(
           linksRef.current,
           {
@@ -111,16 +126,18 @@ export default function MobileMenu() {
         </div>
       </button>
 
+      {/* MOBILE MENU */}
       <div
         ref={menuRef}
-        className="absolute top-full left-0 w-full bg-gray-50 border-b border-gray-200 shadow-xl -z-10 origin-top"
+        className="fixed top-16 left-0 right-0 w-full bg-gray-50 border-b border-gray-200 shadow-xl origin-top invisible opacity-0"
+        style={{ display: "none" }}
       >
-        <div className="flex flex-col px-6 py-8 space-y-4">
+        <div className="flex flex-col px-4 sm:px-6 py-8 space-y-4 max-w-7xl mx-auto">
           <Link
             ref={addToRefs}
             href="/rejestracja"
             onClick={toggleMenu}
-            className="text-xl font-medium text-gray-800 hover:text-blue-600"
+            className="text-xl font-medium text-gray-800  transition-colors"
           >
             Zarejestruj się
           </Link>
@@ -128,7 +145,7 @@ export default function MobileMenu() {
             ref={addToRefs}
             href="/login"
             onClick={toggleMenu}
-            className="text-xl font-medium text-blue-600"
+            className="text-xl font-medium text-(--primary) transition-colors"
           >
             Zaloguj się
           </Link>
