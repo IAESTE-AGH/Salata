@@ -40,3 +40,22 @@
   - 200 OK: User verified successfully.
   - 400 Bad Request: Invalid verification code.
   - 500 Internal Server Error: Server error.
+
+## Events
+
+#### /get_all_current_events
+
+- Method: POST
+- Description: Retrieve all current events for a user.
+- Request Body:
+  - user_id: string (required)
+- Response:
+  - 200 OK: Returns a list of current events.
+  - 400 Bad Request: Invalid user ID.
+  - 500 Internal Server Error: Server error.
+
+#### /create_event
+
+#### /delete_event
+
+#### /change_availability
