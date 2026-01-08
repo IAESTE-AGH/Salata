@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"go_server/internal/config"
 	"net/http"
 	"strings"
@@ -38,5 +39,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			http.Error(w, "Token invalid or expired", http.StatusUnauthorized)
 			return
 		}
+
+		ctx := context.WithValue(r.Context(), UserIDKey, claims.UserId)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
