@@ -33,5 +33,10 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			}
 			return []byte(config.JWTSecret), nil
 		})
+
+		if err != nil || !token.Valid {
+			http.Error(w, "Token invalid or expired", http.StatusUnauthorized)
+			return
+		}
 	})
 }
