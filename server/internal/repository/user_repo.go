@@ -10,7 +10,9 @@ import (
 	"go_server/internal/models"
 	"net/smtp"
 	"strings"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -139,6 +141,17 @@ func loginUser(db *sql.DB, email, password string) (string, error) {
 	if err != nil {
 		return "", errors.New("Invalid password")
 	}
+
+	claims := &models.Claims{
+		UserId: id,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(config.JWTSecret))
+
+	return tokenString, err
 }
 
 func extractNameFromEmail(email string) (string, string, error) {
