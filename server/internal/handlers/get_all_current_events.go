@@ -4,23 +4,20 @@ import (
 	"encoding/json"
 	"go_server/internal/database"
 	"go_server/internal/repository"
+	"go_server/middleware"
 	"net/http"
 )
 
-type RequestGetAllCurrentEvents struct {
-	UserId int `json:"user_id"`
-}
-
 func HandleGetAllCurrentEvents(w http.ResponseWriter, r *http.Request) {
-	db := database.DB
-	var req RequestGetAllCurrentEvents
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	userID, ok := middleware.GetUserID(r.Context())
+	if !ok {
+		http.Error(w, "User ID not found in context", http.StatusUnauthorized)
 		return
 	}
 
-	eventsList, err := repository.GetAllCurrentEvents(db, req.UserId)
+	db := database.DB
+
+	eventsList, err := repository.GetAllCurrentEvents(db, userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
