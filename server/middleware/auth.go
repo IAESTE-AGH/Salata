@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"strings"
 )
 
 type contextKey string
@@ -13,6 +14,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
 			http.Error(w, "No auth token provided", http.StatusUnauthorized)
+			return
+		}
+
+		tokenString := strings.TrimPrefix(authHeader, "Bearer")
+		if tokenString == authHeader {
+			http.Error(w, "Wrong token format. (Expecting Bearer)", http.StatusUnauthorized)
 			return
 		}
 	})
