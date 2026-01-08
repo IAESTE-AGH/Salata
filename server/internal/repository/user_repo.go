@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"go_server/internal/config"
 	"go_server/internal/models"
+	"go_server/middleware"
 	"net/smtp"
 	"strings"
 	"time"
@@ -142,7 +143,7 @@ func LoginUser(db *sql.DB, email, password string) (string, error) {
 		return "", errors.New("Invalid password")
 	}
 
-	claims := &models.Claims{
+	claims := &middleware.Claims{
 		UserId: id,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
