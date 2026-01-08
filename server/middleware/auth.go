@@ -1,8 +1,11 @@
 package middleware
 
 import (
+	"go_server/internal/config"
 	"net/http"
 	"strings"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type contextKey string
@@ -22,5 +25,13 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			http.Error(w, "Wrong token format. (Expecting Bearer)", http.StatusUnauthorized)
 			return
 		}
+
+		claims := &Claims{}
+		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, http.ErrAbortHandler
+			}
+			return []byte(config.JWTSecret), nil
+		})
 	})
 }
