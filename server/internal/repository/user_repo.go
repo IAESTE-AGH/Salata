@@ -121,7 +121,7 @@ func VerifyUser(db *sql.DB, token string) error {
 	return nil
 }
 
-func loginUser(db *sql.DB, email, password string) (string, error) {
+func LoginUser(db *sql.DB, email, password string) (string, error) {
 	if config.JWTSecret == "" {
 		return "", errors.New("JWT key secret is not configured")
 	}
