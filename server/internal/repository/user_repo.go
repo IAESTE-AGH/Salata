@@ -134,6 +134,11 @@ func loginUser(db *sql.DB, email, password string) (string, error) {
 	if err != nil {
 		return "", errors.New("Invalid email")
 	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(storedHash), []byte(password))
+	if err != nil {
+		return "", errors.New("Invalid password")
+	}
 }
 
 func extractNameFromEmail(email string) (string, string, error) {
