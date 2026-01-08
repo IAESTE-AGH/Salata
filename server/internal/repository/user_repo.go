@@ -119,6 +119,12 @@ func VerifyUser(db *sql.DB, token string) error {
 	return nil
 }
 
+func loginUser(db *sql.DB, email, password string) (string, error) {
+	if config.JWTSecret == "" {
+		return "", errors.New("JWT key secret is not configured")
+	}
+}
+
 func extractNameFromEmail(email string) (string, string, error) {
 	parts := strings.Split(email, "@")
 	if len(parts) != 2 {
