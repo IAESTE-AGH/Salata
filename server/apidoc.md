@@ -40,6 +40,18 @@
   - 200 OK: User verified successfully.
   - 400 Bad Request: Invalid verification code.
   - 500 Internal Server Error: Server error.
+  
+#### /login
+- Method: POST
+- Description: Log in a user.
+- Request Body:
+  - email: string (required)
+  - password: string (required)
+- Response:
+  - 202 Accepted: Login successful.
+    - {"mesage": string, "token": string}
+  - 400 Bad Request: Invalid input data.
+  - 401 Unauthorized: Invalid credentials.
 
 ## Events
 

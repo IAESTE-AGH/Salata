@@ -8,9 +8,12 @@ import (
 	"fmt"
 	"go_server/internal/config"
 	"go_server/internal/models"
+	"go_server/middleware"
 	"net/smtp"
 	"strings"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -104,7 +107,7 @@ func VerifyUser(db *sql.DB, token string) error {
 		return err
 	}
 
-	first, last, err := extractNameFromEmail(email)
+	first, last, err := ExtractNameFromEmail(email)
 	if err != nil {
 		return err
 	}
@@ -119,7 +122,40 @@ func VerifyUser(db *sql.DB, token string) error {
 	return nil
 }
 
-func extractNameFromEmail(email string) (string, string, error) {
+func LoginUser(db *sql.DB, email, password string) (string, error) {
+	if config.JWTSecret == "" {
+		return "", errors.New("JWT key secret is not configured")
+	}
+
+	var id int
+	var storedHash string
+	err := db.QueryRow(`
+		SELECT u.id, a.password_hash
+		FROM users u
+		JOIN accounts a ON u.email = a.email
+		WHERE u.email = $1`, email).Scan(&id, &storedHash)
+	if err != nil {
+		return "", errors.New("Invalid email")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(storedHash), []byte(password))
+	if err != nil {
+		return "", errors.New("Invalid password")
+	}
+
+	claims := &middleware.Claims{
+		UserId: id,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(config.JWTSecret))
+
+	return tokenString, err
+}
+
+func ExtractNameFromEmail(email string) (string, string, error) {
 	parts := strings.Split(email, "@")
 	if len(parts) != 2 {
 		return "", "", errors.New("invalid email format")

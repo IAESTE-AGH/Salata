@@ -11,6 +11,7 @@ var (
 	DatabaseURL   string
 	EmailUser     string
 	EmailPassword string
+	JWTSecret     string
 )
 
 func init() {
@@ -22,6 +23,7 @@ func init() {
 	DatabaseURL = os.Getenv("DATABASE_URL")
 	EmailUser = os.Getenv("EMAIL_USER")
 	EmailPassword = os.Getenv("EMAIL_PASSWORD")
+	JWTSecret = os.Getenv("JWT_SECRET")
 
 	log.Println("Configuration loaded")
 }
