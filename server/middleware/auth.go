@@ -13,6 +13,11 @@ type contextKey string
 
 const UserIDKey contextKey = "userID"
 
+func GetUserID(ctx context.Context) (int, bool) {
+	id, ok := ctx.Value("UserID").(int)
+	return id, ok
+}
+
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
