@@ -107,7 +107,7 @@ func VerifyUser(db *sql.DB, token string) error {
 		return err
 	}
 
-	first, last, err := extractNameFromEmail(email)
+	first, last, err := ExtractNameFromEmail(email)
 	if err != nil {
 		return err
 	}
@@ -130,9 +130,9 @@ func LoginUser(db *sql.DB, email, password string) (string, error) {
 	var id int
 	var storedHash string
 	err := db.QueryRow(`
-		SELECT u.id, a.pasword_hash
+		SELECT u.id, a.password_hash
 		FROM users u
-		JOIN account a ON u.email = a.email
+		JOIN accounts a ON u.email = a.email
 		WHERE u.email = $1`, email).Scan(&id, &storedHash)
 	if err != nil {
 		return "", errors.New("Invalid email")
@@ -155,7 +155,7 @@ func LoginUser(db *sql.DB, email, password string) (string, error) {
 	return tokenString, err
 }
 
-func extractNameFromEmail(email string) (string, string, error) {
+func ExtractNameFromEmail(email string) (string, string, error) {
 	parts := strings.Split(email, "@")
 	if len(parts) != 2 {
 		return "", "", errors.New("invalid email format")
