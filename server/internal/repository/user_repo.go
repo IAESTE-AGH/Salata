@@ -123,6 +123,17 @@ func loginUser(db *sql.DB, email, password string) (string, error) {
 	if config.JWTSecret == "" {
 		return "", errors.New("JWT key secret is not configured")
 	}
+
+	var id int
+	var storedHash string
+	err := db.QueryRow(`
+		SELECT u.id, a.pasword_hash
+		FROM users u
+		JOIN account a ON u.email = a.email
+		WHERE u.email = $1`, email).Scan(&id, &storedHash)
+	if err != nil {
+		return "", errors.New("Invalid email")
+	}
 }
 
 func extractNameFromEmail(email string) (string, string, error) {
