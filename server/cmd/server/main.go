@@ -14,23 +14,20 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	protect := func(handlerFunc http.HandlerFunc) http.Handler {
-		handler := http.HandlerFunc(handlerFunc)
-		return middleware.AuthMiddleware(handler)
-	}
+	mux.HandleFunc("GET /status", handlers.HandleGetStatus)
+	mux.HandleFunc("GET /users", handlers.HandleGetUsers)
+	mux.HandleFunc("POST /create_user", handlers.HandleCreateUser)
+	mux.HandleFunc("GET /verify_user", handlers.HandleVerifyUser)
+	mux.HandleFunc("POST /login", handlers.HandleLogin)
 
-	// Public (does not require authentication)
-	mux.HandleFunc("/status", handlers.HandleGetStatus)
-	mux.HandleFunc("/users", handlers.HandleGetUsers)
-	mux.HandleFunc("/login", handlers.HandleLogin)
-	mux.HandleFunc("/verify_user", handlers.HandleVerifyUser)
-	mux.HandleFunc("/create_user", handlers.HandleCreateUser)
+	privateMux := http.NewServeMux()
 
-	// Private (requires authentication)
-	mux.Handle("/create_event", protect(handlers.HandleCreateEvent))
-	mux.Handle("/delete_event", protect(handlers.HandleDeleteEvent))
-	mux.Handle("/change_availability", protect(handlers.HandleChangeAvailability))
-	mux.Handle("/get_all_current_events", protect(handlers.HandleGetAllCurrentEvents))
+	privateMux.HandleFunc("POST /create_event", handlers.HandleCreateEvent)
+	privateMux.HandleFunc("POST /delete_event", handlers.HandleDeleteEvent)
+	privateMux.HandleFunc("POST /change_availability", handlers.HandleChangeAvailability)
+	privateMux.HandleFunc("POST /get_all_current_events", handlers.HandleGetAllCurrentEvents)
+
+	mux.Handle("/", middleware.AuthMiddleware(privateMux))
 
 	log.Println("Server is running at :8080")
 	err := http.ListenAndServe(":8080", mux)
