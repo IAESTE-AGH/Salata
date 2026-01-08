@@ -55,7 +55,7 @@ func setupTestDB(t *testing.T) *sql.DB {
 				WithStartupTimeout(5*time.Second)),
 	)
 	if err != nil {
-		t.Fatal("failed to start container: %s", err)
+		t.Fatalf("failed to start container: %s", err)
 	}
 
 	connStr, err := pgContainer.ConnectionString(ctx, "sslmode=disable")
@@ -68,7 +68,10 @@ func setupTestDB(t *testing.T) *sql.DB {
 		t.Fatal(err)
 	}
 
+	database.DB = db
+
 	t.Cleanup(func() {
+		db.Close()
 		if err := pgContainer.Terminate(ctx); err != nil {
 			t.Fatalf("failed to terminate container: %s", err)
 		}
@@ -78,19 +81,19 @@ func setupTestDB(t *testing.T) *sql.DB {
 
 	content, err := os.ReadFile(schemaPath)
 	if err != nil {
-		t.Fatal("failed to load schema.sql file: %s", err)
+		t.Fatalf("failed to load schema.sql file: %s", err)
 	}
 
 	_, err = db.Exec(string(content))
 	if err != nil {
-		t.Fatal("schema.sql execution error: %s", err)
+		t.Fatalf("schema.sql execution error: %s", err)
 	}
 
 	return db
 }
 
 func TestMain(m *testing.M) {
-	database.Init(config.DatabaseURL)
+	config.JWTSecret = "test-secret-key"
 
 	code := m.Run()
 
